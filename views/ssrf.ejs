@@ -1,0 +1,151 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="azure" data-background-color="black"
+        data-image="http://localhost:5000/img/sidebar-2.jpg">
+        <div class="logo text-center">Playground</div>
+        <div class="sidebar-wrapper">
+            <ul class="nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="./ssrf">
+                        <i class="material-icons">dashboard</i>
+                        <p>SSRF</p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./csrf">
+                        <i class="material-icons">library_books</i>
+                        <p>CSRF</p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./line-info">
+                        <i class="material-icons">account_circle</i>
+                        <p>LINE Info</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:void(0)">SSRF Demo</a>
+                </div>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:void(0)">
+                                <i class="material-icons">person</i>
+                                <%= user.name %>
+                                    <p class="d-lg-none d-md-block">
+                                        Account
+                                    </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- <a href="/users/logout" class="btn btn-secondary">Logout</a> -->
+        <div class="content">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- <a href="/users/register" class="btn btn-info text-center">生成優惠碼<i class="material-icons">refresh</i></a> -->
+                            <button type="submit" class="btn btn-success" onclick="genCoupon()">生成優惠碼<i class="material-icons">refresh</i></button>
+                            <h3 id="coupon"></h3>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header card-header-info">
+                            <h4 class="card-title">儲值</h4>
+                            <p class="card-category">輸入優惠碼，儲值點數</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">優惠碼</label>
+                                        <input type="text" class="form-control" id="inputCoupon">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info pull-right" onclick="useCoupon()">確認</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-profile">
+                        <div class="card-avatar">
+                            <a href="#pablo">
+                                <img class="img" src="/img/point.png" />
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="myPoints"></h4>
+                            <button type="submit" class="btn btn-default btn-round btn-just-icon"
+                                onclick="refreshPoints()">
+                                <i class="material-icons" id="refreshPts">refresh</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script>
+    function refreshPoints() {
+        $.ajax({
+            type: 'GET',
+            url: '/points/get',
+            error: function (xhr) {
+                $("#myPoints").text("Error");
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                $("#myPoints").text(res);
+
+            }
+        });
+    }
+    function genCoupon() {
+        $.ajax({
+            type: 'GET',
+            url: '/coupon',
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                $("#coupon").text(res);
+
+            }
+        });
+    }
+    function useCoupon() {
+        $.ajax({
+            type: 'POST',
+            url: `/coupon/${$("#inputCoupon").val()}`,
+            contentType: 'application/json',
+            // data: JSON.stringify({coupon: $("#inputCoupon").val()}),
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                refreshPoints();
+            }
+        });
+    }
+
+
+
+    refreshPoints();
+</script>

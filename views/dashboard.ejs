@@ -1,0 +1,55 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="azure" data-background-color="black"
+        data-image="http://localhost:5000/img/sidebar-2.jpg">
+        <div class="logo text-center">Playground</div>
+        <div class="sidebar-wrapper">
+            <ul class="nav">
+                <li class="nav-item active  ">
+                    <a class="nav-link" href="./ssrf">
+                        <i class="material-icons">dashboard</i>
+                        <p>SSRF</p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./csrf">
+                        <i class="material-icons">library_books</i>
+                        <p>CSRF</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <h1 class="mt-4">Dashboard</h1>
+        <p class="lead mb-3">Welcome <%= user.name %>
+        </p>
+        <p class="lead mb-3">Points:
+            <p id="myPoints"></p>
+        </p>
+        <a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+    integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script>
+    function start() {
+        console.log("Hey");
+        $.ajax({
+            type: 'GET',
+            url: '/points/get',
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                console.log(res);
+                $("#myPoints").text(res);
+
+            }
+        });
+    }
+    start();
+</script>

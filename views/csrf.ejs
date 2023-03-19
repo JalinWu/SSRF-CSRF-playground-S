@@ -1,0 +1,217 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="azure" data-background-color="black"
+        data-image="http://localhost:5000/img/sidebar-2.jpg">
+        <div class="logo text-center">Playground</div>
+        <div class="sidebar-wrapper">
+            <ul class="nav">
+                <li class="nav-item ">
+                    <a class="nav-link" href="./ssrf">
+                        <i class="material-icons">dashboard</i>
+                        <p>SSRF</p>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./csrf">
+                        <i class="material-icons">library_books</i>
+                        <p>CSRF</p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="./line-info">
+                        <i class="material-icons">account_circle</i>
+                        <p>LINE Info</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:void(0)">CSRF Demo</a>
+                </div>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:void(0)">
+                                <i class="material-icons">person</i>
+                                <%= user.name %>
+                                <p class="d-lg-none d-md-block">
+                                    Account
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- <a href="/users/logout" class="btn btn-secondary">Logout</a> -->
+        <div class="content">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header card-header-info">
+                            <h4 class="card-title">轉出點數</h4>
+                            <p class="card-category">輸入轉出數量以及轉入對象</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">轉出數量</label>
+                                        <input type="number" class="form-control" id="transferPts">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="bmd-label-floating">轉入對象</label>
+                                        <input type="text" class="form-control" id="transferTo">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info pull-right" onclick="doTransfer()">確認</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-profile">
+                        <div class="card-avatar">
+                            <a href="#pablo">
+                                <img class="img" src="/img/point.png" />
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title" id="myPoints"></h4>
+                            <button type="submit" class="btn btn-default btn-round btn-just-icon"
+                                onclick="refreshPoints()">
+                                <i class="material-icons" id="refreshPts">refresh</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header card-header-success"
+                            style="display: flex; justify-content: space-between; align-items: center">
+                            <div>
+                                <h4 class="card-title">轉出紀錄</h4>
+                                <!-- <p class="card-category">近5筆轉出紀錄</p> -->
+                            </div>
+                            <button type="submit" class="btn btn-success btn-round btn-just-icon"
+                                onclick="refreshTransferList()">
+                                <i class="material-icons">refresh</i>
+                            </button>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover">
+                                <thead class="text-warning">
+                                    <th>ID</th>
+                                    <th>轉出對象</th>
+                                    <th>轉出數量</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Dakota Rice</td>
+                                        <td>$36,738</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Minerva Hooper</td>
+                                        <td>$23,789</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Sage Rodriguez</td>
+                                        <td>$56,142</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Philip Chaney</td>
+                                        <td>$38,735</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    function refreshPoints() {
+        $.ajax({
+            type: 'GET',
+            url: '/points/get',
+            error: function (xhr) {
+                $("#myPoints").text("Error");
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                $("#myPoints").text(res);
+
+            }
+        });
+    }
+    function doTransfer() {
+        var pt = $("#transferPts").val();
+        var to = $("#transferTo").val();
+        $.ajax({
+            type: 'GET',
+            url: `/points/transfer?to=${to}&pt=${pt}`,
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                $("#myPoints").text(res);
+                $("#transferPts").val("");
+                $("#transferTo").val("");
+                refreshTransferList();
+            }
+        });
+    }
+    function refreshTransferList() {
+        $.ajax({
+            type: 'GET',
+            url: `/points/transferList`,
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                console.log(res);
+                $('tbody').empty();
+                for (var i = res.length - 1; i >= 0; i--) {
+                    $('tbody').append(`
+                        <tr>
+                            <td>
+                                ${res[i].id}
+                            </td>
+                            <td>
+                                ${res[i].to}
+                            </td>
+                            <td>
+                                ${res[i].pt}
+                            </td>
+                        </tr>
+                    `);
+                }
+
+            }
+        });
+    }
+
+    refreshPoints();
+    refreshTransferList();
+</script>

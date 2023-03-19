@@ -1,0 +1,23 @@
+redirecting...
+
+<script>
+    const email = '<%= email %>'
+    const password = '<%= password %>'
+    function redirect() {
+        $.ajax({
+            type: 'POST',
+            url: `/users/redirect`,
+            contentType: 'application/json',
+            data: JSON.stringify({ email, password }),
+            error: function (xhr) {
+                console.log('Oops, something went wrong.');
+            },
+            success: function (res) {
+                console.log("redirect success");
+                window.location.href = "http://localhost:5000/ssrf"
+            }
+        });
+
+    }
+    // redirect();
+</script>
